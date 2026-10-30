@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      packages: write
+      id-token: write
     steps:
     - uses: actions/checkout@v6
     - uses: actions/setup-dotnet@v5
@@ -39,10 +39,15 @@ jobs:
         dotnet-version: 10.0.403
     - name: Pack
       run: dotnet pack src/ILLink.RoslynAnalyzer/ILLink.RoslynAnalyzer.csproj -c Release -o artifacts/package
+    - name: Sign in to nuget.org through trusted publishing
+      id: nuget
+      uses: NuGet/login@v1
+      with:
+        user: andridavelo
     # A version that is already published is skipped, so only a change to <Version> publishes.
-    - name: Push to GitHub Packages
+    - name: Push to nuget.org
       run: >-
         dotnet nuget push "artifacts/package/*.nupkg"
-        --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        --api-key "${{ secrets.GITHUB_TOKEN }}"
+        --source https://api.nuget.org/v3/index.json
+        --api-key "${{ steps.nuget.outputs.NUGET_API_KEY }}"
         --skip-duplicate

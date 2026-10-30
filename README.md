@@ -33,7 +33,7 @@ upstream's projects build without Arcade.
 ## Releasing
 
 CI runs the suite on every pull request and push. On `main`, it packs the analyzer and pushes the
-package to GitHub Packages; a version that already exists is skipped, so raising `<Version>` in
+package to nuget.org through trusted publishing; a version that already exists is skipped, so raising `<Version>` in
 `src/ILLink.RoslynAnalyzer/ILLink.RoslynAnalyzer.csproj` publishes a release.
 
 ## Updating upstream
