@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Upstream suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.0.403
+    - name: Test against Microsoft's suite
+      run: >-
+        scripts/test-upstream --verbosity minimal
+        --blame-hang-timeout 30s --blame-hang-dump-type mini
+
+  publish:
+    name: Publish package
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.0.403
+    - name: Pack
+      run: dotnet pack src/ILLink.RoslynAnalyzer/ILLink.RoslynAnalyzer.csproj -c Release -o artifacts/package
+    # A version that is already published is skipped, so only a change to <Version> publishes.
+    - name: Push to GitHub Packages
+      run: >-
+        dotnet nuget push "artifacts/package/*.nupkg"
+        --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        --api-key "${{ secrets.GITHUB_TOKEN }}"
+        --skip-duplicate

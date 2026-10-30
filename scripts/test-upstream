@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Runs Microsoft's ILLink analyzer test suite, at the upstream commit in upstream-commit,
+# against src/ILLink.RoslynAnalyzer. Extra arguments go to dotnet test.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FORK="$ROOT/src/ILLink.RoslynAnalyzer"
+GLUE="$ROOT/test"
+COMMIT="$(cat "$ROOT/upstream-commit")"
+WORK="${ILLINK_UPSTREAM_DIR:-$ROOT/artifacts/upstream}"
+ILLINK="$WORK/src/tools/illink"
+
+if [ "$(git -C "$WORK" rev-parse HEAD 2>/dev/null)" != "$COMMIT" ]; then
+    rm -rf "$WORK"
+    mkdir -p "$WORK"
+    git -C "$WORK" init -q
+    git -C "$WORK" remote add origin https://github.com/dotnet/runtime.git
+    git -C "$WORK" sparse-checkout set --no-cone \
+        /src/tools/illink/ \
+        /src/libraries/Common/tests/SourceGenerators/
+    git -C "$WORK" fetch -q --depth 1 --filter=blob:none origin "$COMMIT"
+    git -C "$WORK" checkout -q FETCH_HEAD
+fi
+
+git -C "$WORK" checkout -q -- .
+git -C "$WORK" clean -q -fdx -e artifacts/
+
+rm -rf "$ILLINK/src/ILLink.RoslynAnalyzer" "$ILLINK/src/ILLink.Shared"
+mkdir -p "$ILLINK/src/ILLink.RoslynAnalyzer"
+tar -C "$FORK" --exclude=bin --exclude=obj -cf - . | tar -C "$ILLINK/src/ILLink.RoslynAnalyzer" -xf -
+cp -r "$FORK/Shared" "$ILLINK/src/ILLink.Shared"
+
+cp "$GLUE/Directory.Build.props" "$GLUE/Directory.Build.targets" "$ILLINK/"
+cp "$GLUE/ILLink.CodeFixProvider.csproj" "$ILLINK/src/ILLink.CodeFix/"
+cp "$GLUE/ILLink.RoslynAnalyzer.Tests.csproj" "$GLUE"/*.cs "$ILLINK/test/ILLink.RoslynAnalyzer.Tests/"
+
+dotnet test "$ILLINK/test/ILLink.RoslynAnalyzer.Tests/ILLink.RoslynAnalyzer.Tests.csproj" -c Release "$@"

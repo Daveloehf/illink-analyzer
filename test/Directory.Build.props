@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <ArtifactsBinDir>$(MSBuildThisFileDirectory)artifacts/bin/</ArtifactsBinDir>
+    <ArtifactsObjDir>$(MSBuildThisFileDirectory)artifacts/obj/</ArtifactsObjDir>
+    <NetCoreAppToolCurrent>net10.0</NetCoreAppToolCurrent>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <MicrosoftCodeAnalysisVersion_LatestVS>4.14.0</MicrosoftCodeAnalysisVersion_LatestVS>
+    <MicrosoftCodeAnalysisVersion>5.0.0</MicrosoftCodeAnalysisVersion>
+    <CompilerPlatformTestingVersion>1.1.2</CompilerPlatformTestingVersion>
+    <SystemSecurityPermissionsVersion>10.0.0</SystemSecurityPermissionsVersion>
+    <LibrariesProjectRoot>$(MSBuildThisFileDirectory)../../libraries/</LibrariesProjectRoot>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS0436;NU1603;NU1608</NoWarn>
+  </PropertyGroup>
+</Project>

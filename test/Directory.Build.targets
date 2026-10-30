@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <MicrosoftNetCoreAppRefPackRefDir>$(NetCoreTargetingPackRoot)/Microsoft.NETCore.App.Ref/$(BundledNETCoreAppPackageVersion)/ref/net10.0/</MicrosoftNetCoreAppRefPackRefDir>
+  </PropertyGroup>
+</Project>

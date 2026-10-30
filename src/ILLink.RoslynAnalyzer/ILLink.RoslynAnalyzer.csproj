@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>ILLink.RoslynAnalyzer</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <NoWarn>$(NoWarn);CS0436;CS8524</NoWarn>
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>Sharpity.ILLink.RoslynAnalyzer</PackageId>
+    <Version>10.0.14-sharpity.1</Version>
+    <Authors>Sharpity</Authors>
+    <Description>The .NET trim, AOT and single-file analyzer with a faster dataflow solver that analyzes methods of any size.</Description>
+    <PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/Daveloehf/illink-analyzer</RepositoryUrl>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="External/Strings/Strings.resx">
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedClassName>Strings</StronglyTypedClassName>
+      <StronglyTypedNamespace>System.Reflection.Metadata</StronglyTypedNamespace>
+      <StronglyTypedFileName>$(IntermediateOutputPath)Strings.g.cs</StronglyTypedFileName>
+      <LogicalName>System.Reflection.Metadata.Strings.resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shared/SharedStrings.resx">
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedClassName>SharedStrings</StronglyTypedClassName>
+      <StronglyTypedNamespace>ILLink.Shared</StronglyTypedNamespace>
+      <StronglyTypedFileName>$(IntermediateOutputPath)SharedStrings.g.cs</StronglyTypedFileName>
+      <LogicalName>ILLink.Shared.SharedStrings.resources</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="../../LICENSE.TXT" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
+    <PackageReference Include="StaticCs" Version="0.2.0" PrivateAssets="all" ExcludeAssets="contentfiles" />
+  </ItemGroup>
+</Project>
